@@ -1,0 +1,4 @@
+XTerm*termname: xterm-256color
+XTerm*locale: true
+*foreground: rgb:ff/ff/ff
+*background: rgb:00/00/00
