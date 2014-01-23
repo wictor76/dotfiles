@@ -1,4 +1,6 @@
 ### shell coloring ###
+export TERM=xterm-256color
+
 alias ls='ls --color=auto'
 eval `dircolors -b`
 
