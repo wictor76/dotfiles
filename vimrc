@@ -51,7 +51,7 @@ set nowrapscan "don't wrap at the end of file when searching
 set incsearch
 set history=50
 
-colorscheme wombat "darkburn
+colorscheme wombat256 "darkburn
 :copen
 
 " Switch syntax highlighting on, when the terminal has colors
