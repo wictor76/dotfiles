@@ -1,4 +1,4 @@
-" Updated: Tue 05 Aug 2014 10:21:43 AM EEST by kaapo@arch
+" Updated: Tue 05 Aug 2014 01:13:44 PM EEST
 
 set nocompatible		" vim, not vi.. must be first, because it changes other options as a side effects
 
@@ -98,7 +98,7 @@ if !exists("AskApacheLoaded")
     " Warning, this is controlled by an autocmd triggered when closing the file that updates the file (in a great way)
     " Updated: Wed Feb 22 13:25:23 2012 by galileo@galileo
     function! LastMod()
-        exe "silent! 1,20s/Updated: .*/" . printf('Updated: %s by %s@%s', strftime("%c"), expand("$LOGNAME"), hostname()) . "/e"
+        exe "silent! 1,20s/Updated: .*/" . printf('Updated: %s', strftime("%c")) . "/e"
     endfunction
 
 
@@ -223,7 +223,7 @@ if has('title')|set titlestring=%t%(\ [%R%M]%)|endif
 " SET TABLINE {{{3
 if exists("*s:MyTabL")|set tabline=%!MyTabL()|endif
 
-"let g:vimsyn_folding='af' KPa disable folding
+"let g:vimsyn_folding='af'
 
 "DISABLE FILETYPE-SPECIFIC MAPS {{{3
 let no_plugin_maps=1
@@ -308,7 +308,7 @@ set expandtab					"expand tabs to spaces"
 set noruler					" show the line number on the bar
 set nospell
 "set nohidden					" close the buffer when I close a tab (I use tabs more than buffers)
-set hidden	"KPa
+set hidden
 
 set noerrorbells visualbell t_vb= " Disable ALL bells
 
@@ -329,7 +329,7 @@ set sidescrolloff=2			"keep at least 5 lines left/right
 set noguipty
 
 set splitright
-"set splitbelow KPa
+"set splitbelow
 
 set restorescreen=on " restore screen contents when vim exits -  disable withset t_ti= t_te=
 
@@ -354,7 +354,7 @@ set tabpagemax=55
 set showtabline=2		" 2 always, 1 only if multiple tabs
 set smarttab			" tab and backspace are smart
 
-" KPa disable folding
+" disable folding
 "set foldmethod=marker
 set nofoldenable
 "set foldcolumn=6				" the blank left-most bar left of the numbered lines
@@ -472,8 +472,8 @@ if has('autocmd')
         autocmd BufRead /etc/ZZZ/*.sh,.bash_profile,.bash_login,.bashrc,.bash_login_user,.bash_logout setlocal ts=4 sw=4 ft=sh foldmethod=marker tw=500 foldcolumn=7
 
 
-        " INSERT CURRENT DATE AND TIME IN A *.SH FILE WHEN WRITING IT {{{3
-        autocmd BufWritePre,FileWritePre *.*   ks|call LastMod()|'s
+        " INSERT CURRENT DATE AND TIME IN A FILE WHEN WRITING IT {{{3
+        autocmd BufWritePre,FileWritePre *   ks|call LastMod()|'s
 
 
         " IMPROVE LEGIBILITY {{{3
