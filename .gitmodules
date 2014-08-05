@@ -1,3 +1,6 @@
 [submodule "vim/bundle/ack.vim"]
 	path = vim/bundle/ack.vim
 	url = http://github.com/mileszs/ack.vim.git
+[submodule "vim/bundle/lusty"]
+	path = vim/bundle/lusty
+	url = http://github.com/sjbach/lusty.git
