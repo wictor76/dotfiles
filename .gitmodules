@@ -4,3 +4,27 @@
 [submodule "vim/bundle/lusty"]
 	path = vim/bundle/lusty
 	url = http://github.com/sjbach/lusty.git
+[submodule "vim/bundle/syntastic"]
+	path = vim/bundle/syntastic
+	url = http://github.com/scrooloose/syntastic.git
+[submodule "vim/bundle/tagbar"]
+	path = vim/bundle/tagbar
+	url = http://github.com/majutsushi/tagbar.git
+[submodule "vim/bundle/vcscommand.vim"]
+	path = vim/bundle/vcscommand.vim
+	url = http://github.com/vim-scripts/vcscommand.vim.git
+[submodule "vim/bundle/vim-airline"]
+	path = vim/bundle/vim-airline
+	url = http://github.com/bling/vim-airline.git
+[submodule "vim/bundle/vim-colors-solarized"]
+	path = vim/bundle/vim-colors-solarized
+	url = http://github.com/altercation/vim-colors-solarized.git
+[submodule "vim/bundle/vim-hemisu"]
+	path = vim/bundle/vim-hemisu
+	url = http://github.com/noahfrederick/vim-hemisu.git
+[submodule "vim/bundle/vim-lucius"]
+	path = vim/bundle/vim-lucius
+	url = http://github.com/jonathanfilip/vim-lucius.git
+[submodule "vim/bundle/vim-tomorrow-theme"]
+	path = vim/bundle/vim-tomorrow-theme
+	url = http://github.com/chriskempson/vim-tomorrow-theme.git
