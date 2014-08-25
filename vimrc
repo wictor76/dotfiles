@@ -1,4 +1,4 @@
-" Updated: Tue 05 Aug 2014 01:13:44 PM EEST
+" Updated: Mon 11 Aug 2014 01:14:14 PM EEST
 
 set nocompatible		" vim, not vi.. must be first, because it changes other options as a side effects
 
@@ -373,6 +373,7 @@ set stal=2						 " show tabline always
 " close preview window automatically
 "let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_confirm_extra_conf = 0
 "}}}1 OPTIONS
 
 
