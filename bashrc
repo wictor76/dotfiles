@@ -1,5 +1,6 @@
 ### shell coloring ###
 export TERM=xterm-256color
+export EDITOR="vim"
 
 alias ls='ls --color=auto'
 eval `dircolors -b`
