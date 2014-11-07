@@ -1,4 +1,4 @@
-" Updated: Mon 11 Aug 2014 01:14:14 PM EEST
+" Updated: Fri 07 Nov 2014 12:47:08 PM EET
 
 set nocompatible		" vim, not vi.. must be first, because it changes other options as a side effects
 
@@ -21,7 +21,7 @@ nmap <leader>a :tab split<CR>:Ack ""<Left>
 nmap <leader>A :tab split<CR>:Ack <C-r><C-w><CR>
 
 "nmap <F6> :let bufname = expand('%')<CR>:tab new<CR>:r !cppcheck <c-r>=bufname<CR><CR>
-nmap <F6> :new \| r !cppcheck #<CR>
+nmap <F6> :new \| r !cppcheck --enable=all #<CR>
 
 nnoremap <silent> <F8> :TagbarToggle<CR>
 map <F9> :new<CR>:read !svn diff<CR>:set syntax=diff buftype=nofile<CR>gg
@@ -374,6 +374,9 @@ set stal=2						 " show tabline always
 "let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_confirm_extra_conf = 0
+
+let g:airline_theme="dark"
+
 "}}}1 OPTIONS
 
 
