@@ -1,4 +1,4 @@
-" Updated: Fri 07 Nov 2014 12:47:08 PM EET
+" Updated: la  7. marraskuuta 2015 19.44.48
 
 set nocompatible		" vim, not vi.. must be first, because it changes other options as a side effects
 
@@ -256,9 +256,6 @@ set swapsync=fsync
 "set nocompatible		" vim, not vi.. must be first, because it changes other options as a side effect
 set modeline
 
-call pathogen#infect()
-call pathogen#helptags()
-
 set statusline=%M%h%y\ %t\ %F\ %p%%\ %l/%L\ %=[%{&ff},%{&ft}]\ [a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]
 set title titlelen=150 titlestring=%(\ %M%)%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)\ -\ %{v:servername}
 
@@ -290,7 +287,7 @@ set complete=.,w,b,u,U,t,i,d	" do lots of scanning on tab completion
 set cursorline					" show the cursor line
 "set enc=utf-8 fenc=utf-8		" utf-8
 
-set history=3000				" keep 3000 lines of command line history
+set history=300				" keep 300 lines of command line history
 
 set keywordprg=TERM=mostlike\ man\ -s\ -Pless
 
