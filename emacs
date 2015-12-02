@@ -723,7 +723,7 @@
 (global-set-key (kbd "C-c b") 'org-iswitchb)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c o") 
+(global-set-key (kbd "C-c o")
                 (lambda () (interactive) (find-file "~/org/urgent.org")))
 ;;(setq org-default-notes-file "~/org/notes.org")
 
@@ -806,46 +806,5 @@
 
             ))
 
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
- '(safe-local-variable-values
-        (quote
-         ((eval let
-                (flags
-                 (quote nil))
-                (mapcar
-                 (lambda
-                   (p)
-                   (add-to-list
-                    (quote flags)
-                    (expand-file-name p
-                                      (projectile-project-root))))
-                 (quote
-                  ("Software/app/bsp" "Software/app/fw")))
-                (setq flycheck-clang-include-path
-                      (delq nil
-                            (delete-dups
-                             (append flags flycheck-clang-include-path)))))
-          (eval if
-                (boundp
-                 (quote c-offsets-alist))
-                (add-to-list
-                 (quote c-offsets-alist)
-                 (quote
-                  (innamespace . -))))
-          (eval add-to-list
-                (quote auto-mode-alist)
-                (quote
-                 ("\\.h\\'" . c++-mode)))
-          (whitespace-style face tabs tab-mark trailing lines-tail empty)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(whitespace-space ((t (:foreground "darkgray")))))
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
