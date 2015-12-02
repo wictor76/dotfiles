@@ -64,6 +64,11 @@
 
 (prefer-coding-system 'utf-8)
 
+;; Title
+(setq frame-title-format
+  '("Emacs - " (buffer-file-name "%f"
+    (dired-directory dired-directory "%b"))))
+
 (use-package spaceline-config
   :ensure spaceline
   :config (progn
@@ -115,15 +120,16 @@
 ;; the center of the screen, but this can make the scrolling confusing
 
 ;;(setq scroll-step 1)
-;;(setq redisplay-dont-pause t
-;;  scroll-margin 1
-;;  scroll-step 1
-;;  scroll-conservatively 10000
-;;  scroll-preserve-screen-position 1)
-(setq scroll-margin 3
-scroll-conservatively 1000
-scroll-up-aggressively 0.01
-scroll-down-aggressively 0.01)
+(setq redisplay-dont-pause t
+  scroll-margin 3
+  scroll-step 1
+  scroll-conservatively 10000
+  scroll-preserve-screen-position 1)
+
+;;(setq scroll-margin 3
+;;scroll-conservatively 1000
+;;scroll-up-aggressively 0.01
+;;scroll-down-aggressively 0.01)
 
 ;; Page down/up move the point, not the screen.
 ;; In practice, this means that they can move the
@@ -711,6 +717,77 @@ scroll-down-aggressively 0.01)
   :config (progn
             (setq latex-preview-pane-multifile-mode (quote auctex))))
 
+;; ORG
+(setq org-directory "~/org/")
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c o") 
+                (lambda () (interactive) (find-file "~/org/urgent.org")))
+;;(setq org-default-notes-file "~/org/notes.org")
+
+;;(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+
+(setq org-log-done nil)
+(setq org-log-into-drawer t)
+(setq org-todo-keywords '((sequence "TODO(t)" "|" "STALLED(s)" "DONE(d)")))
+(setq org-reverse-note-order t)
+(setq org-refile-use-outline-path 'file)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-targets '(("~/org/tasks.org" . (:maxlevel . 10))
+                           ("~/org/urgent.org" . (:maxlevel . 2))
+                           ("~/org/schedule.org" . (:maxlevel . 2))))
+(setq org-blank-before-new-entry nil)
+
+(setq org-agenda-custom-commands
+    (quote
+     (("r" "Daily Review"
+       ((agenda "" nil)
+        (tags-todo "URGENT" nil)
+        (tags-todo "+TODO=\"TODO\"+PRIORITY<>\"\"+@HOME" nil)
+        (tags-todo "+TODO=\"TODO\"+PRIORITY<>\"\"+@COMPUTER" nil)
+        (tags-todo "+TODO=\"TODO\"+PRIORITY<>\"\"+@BUY" nil)
+        (tags-todo "+TODO=\"TODO\"+PRIORITY<>\"\"+@TRIP" nil)
+        (tags-todo "+TODO=\"TODO\"+PRIORITY<>\"\"+@MEETING" nil)
+        (tags-todo "+TODO=\"TODO\"+PRIORITY<>\"\"-@HOME-@COMPUTER-@BUY-@TRIP-@MEETING-URGENT" nil)
+        (tags-todo "TODO=\"STALLED\"" nil))
+       nil
+       ("~/tmp/daily-agenda.html"))
+      ("w" "Weekly Review"
+       ((tags "PROJECT" nil)
+        (tags "BACKGROUNDPROJECT" nil)
+        (tags "FUTUREPROJECT" nil)
+        (tags "GOAL" nil))
+       ((org-tags-exclude-from-inheritance (quote ("PROJECT" "FUTUREPROJECT" "BACKGROUNDPROJECT" "GOAL"))))
+       ("~/tmp/weekly-agenda.html")))))
+
+(setq org-agenda-files
+    (quote ("~/org/schedule.org"
+            "~/org/tasks.org"
+            "~/org/urgent.org")))
+(setq org-agenda-ndays 7)
+(setq org-agenda-show-all-dates t)
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-sorting-strategy
+      (quote ((agenda habit-down time-up priority-down category-keep)
+              (todo category-down priority-down)
+              (tags priority-down category-keep)
+              (search category-keep))))
+(setq org-agenda-start-on-weekday nil)
+(setq org-capture-templates
+      (quote (("t" "Task" entry (file "~/org/urgent.org") "* TODO %^{Task} CREATED: %U %?")
+              ("r" "Referenced Task" entry (file "~/org/urgent.org") "* TODO %^{Task} CREATED: %U %? %a")
+              ("l" "Log entry" entry (file+datetree "~/org/schedule.org") "* %^{Summary} %?")
+              ("p" "Post/Predated log entry" entry (file+datetree+prompt "~/org/schedule.org") "* %^{Summary} %?")
+              ("s" "Schedule entry" entry (file+datetree+prompt "~/org/schedule.org") "* %^T %?"))))
+(setq org-default-notes-file "~/org/urgent.org")
+(setq org-tags-column -100)
+;;(setq org-tags-exclude-from-inheritance (quote ("GOAL" "FUTUREPROJECT" "PROJECT" "BACKGROUNDPROJECT")))
+
+
+
 (use-package ob
 
   :config (progn
@@ -737,35 +814,35 @@ scroll-down-aggressively 0.01)
  ;; If there is more than one, they won't work right.
  '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
  '(safe-local-variable-values
-   (quote
-    ((eval let
-           (flags
-            (quote nil))
-           (mapcar
-            (lambda
-              (p)
-              (add-to-list
-               (quote flags)
-               (expand-file-name p
-                                 (projectile-project-root))))
-            (quote
-             ("Software/app/bsp" "Software/app/fw")))
-           (setq flycheck-clang-include-path
-                 (delq nil
-                       (delete-dups
-                        (append flags flycheck-clang-include-path)))))
-     (eval if
-           (boundp
-            (quote c-offsets-alist))
-           (add-to-list
-            (quote c-offsets-alist)
-            (quote
-             (innamespace . -))))
-     (eval add-to-list
-           (quote auto-mode-alist)
-           (quote
-            ("\\.h\\'" . c++-mode)))
-     (whitespace-style face tabs tab-mark trailing lines-tail empty)))))
+        (quote
+         ((eval let
+                (flags
+                 (quote nil))
+                (mapcar
+                 (lambda
+                   (p)
+                   (add-to-list
+                    (quote flags)
+                    (expand-file-name p
+                                      (projectile-project-root))))
+                 (quote
+                  ("Software/app/bsp" "Software/app/fw")))
+                (setq flycheck-clang-include-path
+                      (delq nil
+                            (delete-dups
+                             (append flags flycheck-clang-include-path)))))
+          (eval if
+                (boundp
+                 (quote c-offsets-alist))
+                (add-to-list
+                 (quote c-offsets-alist)
+                 (quote
+                  (innamespace . -))))
+          (eval add-to-list
+                (quote auto-mode-alist)
+                (quote
+                 ("\\.h\\'" . c++-mode)))
+          (whitespace-style face tabs tab-mark trailing lines-tail empty)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
