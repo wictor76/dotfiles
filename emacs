@@ -85,7 +85,7 @@
 ;;(require 'evil)
 ;;(evil-mode t)
 
-(set-face-attribute 'default nil :height 60) ; The value is in 1/10pt, so 100 will give you 10pt, etc. 
+(set-face-attribute 'default nil :height 80) ; The value is in 1/10pt, so 100 will give you 10pt, etc. 
 ;;(when window-system (set-frame-size (selected-frame) 160 60))
 
 
@@ -472,6 +472,19 @@
                                "(")                                 ; Paren for method invocation
                              1 'font-lock-function-name-face t))))
 
+(use-package anaconda-mode
+  :ensure t
+  :diminish anaconda-mode
+  :config (progn
+            (add-hook 'python-mode-hook #'anaconda-mode)
+            (add-hook 'python-mode-hook #'eldoc-mode)
+            (bind-key "M-," #'anaconda-mode-go-back anaconda-mode-map)
+            ))
+
+(use-package helm-pydoc
+  :ensure t
+  :config (progn
+            (bind-key "C-c C-d" #'helm-pydoc python-mode-map)))
 
 (use-package company-anaconda
   :ensure t)
@@ -561,9 +574,9 @@
           (add-hook 'cython-mode-hook 'ws-butler-mode)))
 
 
-(use-package magit
-  :ensure t)
-(global-set-key (kbd "<f7>") 'magit-status)
+;;(use-package magit
+;;  :ensure t)
+;;(global-set-key (kbd "<f7>") 'magit-status)
 
 
 (use-package git-timemachine
