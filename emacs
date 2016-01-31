@@ -45,6 +45,11 @@
 (defvar backup-dir (expand-file-name "autosaves" user-emacs-directory))
 (setq backup-directory-alist (list (cons "." backup-dir)))
 
+;; delete whitespace before save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+
+
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; monokai theme
@@ -100,6 +105,7 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
+(setq-default tab-stop-list (number-sequence 4 200 4))
 (setq-default c-default-style "linux")
 (setq-default c-basic-offset 4)
 (c-set-offset 'comment-intro 0)
@@ -150,6 +156,15 @@
 
 (global-set-key [next] 'sfp-page-down)
 (global-set-key [prior] 'sfp-page-up)
+
+;; highlight nested parentheses in different colours
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+)
+
+
 
 (use-package projectile
   :ensure t
@@ -588,9 +603,22 @@
 
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
+(use-package indent-guide
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook (lambda () (indent-guide-mode)))
+)
 
+;;It's very difficult to remember all the shortcuts available in emacs. The =guide-key= plugin pops up a list of available
+;;suggestions after a little while.
 
-
+(use-package which-key
+  :ensure t
+  :diminish which-key-mode
+  :init
+  (setq which-key-idle-delay 0.5)
+  (which-key-mode)
+)
 
 
 (defun my-whitespace-mode-local ()
