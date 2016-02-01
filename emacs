@@ -90,7 +90,7 @@
 ;;(require 'evil)
 ;;(evil-mode t)
 
-(set-face-attribute 'default nil :height 80) ; The value is in 1/10pt, so 100 will give you 10pt, etc. 
+(set-face-attribute 'default nil :height 80) ; The value is in 1/10pt, so 100 will give you 10pt, etc.
 ;;(when window-system (set-frame-size (selected-frame) 160 60))
 
 
@@ -360,12 +360,37 @@
   )
 
 
+(defun my-helm-swoop-pre-fill ()
+    (thing-at-point 'symbol)) ;; I’m going back and forth what I prefer
+
+(setq my-helm-swoop-ignore-major-mode
+            '(dired-mode paradox-menu-mode doc-view-mode pdf-view-mode mu4e-headers-mode))
+
+(defun my-swoop-or-search ()
+    (interactive)
+      (if (or (> (buffer-size) 1048576) ;; helm-swoop can be slow on big buffers
+                        (memq major-mode my-helm-swoop-ignore-major-mode))
+              (isearch-forward)
+                  (helm-swoop)
+                      ))
+
 (use-package helm-swoop
   :ensure t
-  :bind (("C-c C-SPC" . helm-swoop)
-         ("C-c o" . helm-multi-swoop-all)
-         ("C-s"   . helm-swoop)
-         ("C-r"   . helm-resume)))
+  :bind (("C-c o" . helm-multi-swoop-org)
+         ("C-s"   . my-swoop-or-search)
+         ("C-S-s" . helm-multi-swoop-all)
+         ("C-r"   . helm-resume))
+  :config (progn
+            (setq helm-swoop-pre-input-function  #'my-helm-swoop-pre-fill
+                  helm-swoop-split-with-multiple-windows nil
+                  helm-swoop-speed-or-color t)
+
+            (bind-key "C-S-s" #'helm-multi-swoop-all-from-helm-swoop helm-swoop-map)
+            (bind-key "C-r" #'helm-previous-line helm-swoop-map)
+            (bind-key "C-s" #'helm-next-line helm-swoop-map)
+            (bind-key "C-r" 'helm-previous-line helm-multi-swoop-map)
+            (bind-key "C-s" 'helm-next-line helm-multi-swoop-map)
+            ))
 
 (use-package ag
   :ensure t)
@@ -378,6 +403,7 @@
                 helm-ag-fuzzy-match t
                 helm-ag-use-grep-ignore-list t
                 helm-ag-use-agignore t))
+
 
 
 (use-package helm-projectile
@@ -406,6 +432,13 @@
           (semantic-mode 1)
           (global-ede-mode t)
           (ede-enable-generic-projects)
+
+          ;;(setq semantic-new-buffer-setup-functions (remove-if (lambda (buffer-setup-function)
+          ;;                                                       (member (car buffer-setup-function)
+          ;;                                                               '(python-mode js-mode scheme-mode html-mode)))
+          ;;                                                     semantic-new-buffer-setup-functions))
+
+          (remove-hook 'python-mode-hook 'wisent-python-default-setup)
 
           (defun my-inhibit-semantic-p ()
             (not (member major-mode '(c-mode c++-mode))))
@@ -525,6 +558,8 @@
                   company-dabbrev-ignore-invisible t
                   company-dabbrev-other-buffers t
                   company-dabbrev-downcase nil
+                  company-dabbrev-code-everywhere t
+                  company-tooltip-align-annotations t
                   company-minimum-prefix-length 2
                   company-global-modes '(not sage-shell:sage-mode
                                              sage-shell-mode
@@ -560,21 +595,83 @@
   :init (company-quickhelp-mode 1))
 
 (use-package flycheck-pos-tip
-  :ensure t)
-
-(use-package flycheck
   :ensure t
-  :commands global-flycheck-mode
-  :init (global-flycheck-mode)
   :config (progn
-            (setq flycheck-check-syntax-automatically '(save mode-enabled))
-            (setq flycheck-standard-error-navigation nil)
             ;; flycheck errors on a tooltip (doesnt work on console)
             (when (display-graphic-p (selected-frame))
               (eval-after-load 'flycheck
                 '(custom-set-variables
                   '(flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
-              )))
+              )
+            ))
+
+
+
+;;(use-package flycheck
+;;  :ensure t
+;;  :commands global-flycheck-mode
+;  :init (global-flycheck-mode)
+;  :config (progn
+;            (setq flycheck-check-syntax-automatically '(save mode-enabled))
+;            (setq flycheck-standard-error-navigation nil)
+;            (setq flycheck-python-flake8-executable (executable-find "flake8-python2"))
+;            ;; flycheck errors on a tooltip (doesnt work on console)
+;            (when (display-graphic-p (selected-frame))
+;              (eval-after-load 'flycheck
+;                '(custom-set-variables
+;                  '(flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
+;              )))
+
+(use-package flycheck
+  :ensure t
+  :commands global-flycheck-mode
+  :diminish flycheck-mode
+  :config (progn
+            (global-flycheck-mode)
+
+            (bind-key "C-c f n" #'flycheck-next-error flycheck-mode-map)
+            (bind-key "C-c f p" #'flycheck-previous-error flycheck-mode-map)
+            (bind-key "C-c f l" #'flycheck-list-errors flycheck-mode-map)
+
+            (setq flycheck-check-syntax-automatically '(save mode-enabled))
+            (setq flycheck-standard-error-navigation nil)
+
+            (when (fboundp 'define-fringe-bitmap)
+              (define-fringe-bitmap 'my-flycheck-fringe-indicator
+                (vector #b00000000
+                        #b00000000
+                        #b00000000
+                        #b00000000
+                        #b00011000
+                        #b01111110
+                        #b11111111
+                        #b11111111
+                        #b11111111
+                        #b11111111
+                        #b11111111
+                        #b01111110
+                        #b00011000
+                        #b00000000
+                        #b00000000
+                        #b00000000
+                        #b00000000)))
+
+
+            (flycheck-define-error-level 'error
+              :overlay-category 'flycheck-error-overlay
+              :fringe-bitmap 'my-flycheck-fringe-indicator
+              :fringe-face 'flycheck-fringe-error)
+
+            (flycheck-define-error-level 'warning
+              :overlay-category 'flycheck-warning-overlay
+              :fringe-bitmap 'my-flycheck-fringe-indicator
+              :fringe-face 'flycheck-fringe-warning)
+
+            (flycheck-define-error-level 'info
+              :overlay-category 'flycheck-info-overlay
+              :fringe-bitmap 'my-flycheck-fringe-indicator
+              :fringe-face 'flycheck-fringe-info)
+            ))
 
 (use-package helm-flycheck              ; Helm frontend for Flycheck errors
   :ensure t
@@ -587,6 +684,10 @@
           (add-hook 'c-mode-common-hook 'ws-butler-mode)
           (add-hook 'python-mode-hook 'ws-butler-mode)
           (add-hook 'cython-mode-hook 'ws-butler-mode)))
+
+(use-package clang-format
+  :ensure t
+  )
 
 
 ;;(use-package magit
@@ -750,6 +851,11 @@
 
 (bind-key "C-§" #'my-quit-bottom-side-windows)
 
+(use-package volatile-highlights
+  :ensure t
+  :commands volatile-highlights-mode
+  :config (volatile-highlights-mode t)
+  :diminish volatile-highlights-mode)
 
 
 (use-package latex-preview-pane
