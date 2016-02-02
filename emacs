@@ -52,11 +52,35 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+(use-package grandshell-theme
+  :ensure t
+  :config (load-theme 'grandshell t))
+
 ;; monokai theme
-(use-package monokai-theme
-  :ensure monokai-theme
-  :config
-  (progn (load-theme 'monokai t)))
+;(use-package monokai-theme
+;  :ensure monokai-theme
+;  :config
+;  (progn (load-theme 'monokai t)))
+
+;(use-package color-theme-sanityinc-tomorrow
+;  :ensure t
+;  :config (load-theme 'sanityinc-tomorrow-night t))
+
+;(use-package naquadah-theme
+;  :ensure t
+;  :config (load-theme 'naquadah t))
+
+;(use-package ample-theme
+;  :init (progn (load-theme 'ample t t)
+;               ;(load-theme 'ample-flat t t)
+;               ;(load-theme 'ample-light t t)
+;               (enable-theme 'ample))
+;  :defer t
+;  :ensure t)
+
+;(use-package alect-themes
+;  :ensure t
+;  :config (progn (load-theme 'alect-dark t)))
 
 ;; utf-8
 (setq locale-coding-system 'utf-8)
