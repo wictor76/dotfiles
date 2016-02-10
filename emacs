@@ -114,9 +114,19 @@
 ;;(require 'evil)
 ;;(evil-mode t)
 
+;;(setq default-emacs-font "Terminus-14")
+
+;;(if (>= emacs-major-version 23)
+;;    (progn (set-frame-font default-emacs-font)
+;;           (add-to-list 'default-frame-alist (cons 'font default-emacs-font))))
+(pcase system-name
+  ("sputbox"  (set-frame-font "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*-1"))
+  ("T61" (set-frame-font "-xos4-Terminus-normal-normal-normal-*-14-*-*-*-c-80-iso10646-1"))
+  (_ (set-frame-font "-xos4-terminus-medium-r-normal-*-12-*-*-*-*-*-*-1")))
+
+
 (set-face-attribute 'default nil :height 80) ; The value is in 1/10pt, so 100 will give you 10pt, etc.
 ;;(when window-system (set-frame-size (selected-frame) 160 60))
-
 
 (setq inhibit-startup-message t)
 (setq-default fill-column 80)
@@ -417,11 +427,18 @@
             ))
 
 (use-package ag
-  :ensure t)
+  :ensure t
+  :defer 1
+  :config
+  (progn
+    (setq ag-reuse-buffers 't
+          ag-highlight-search t
+          ag-arguments (list "--smart-case" "--nogroup" "--column" "--all-types" "--")))
+  :bind (("C-x C-a" . ag-project)))
 
 (use-package helm-ag
   :ensure t
-  :config (setq helm-ag-base-command "ag --nocolor --nogroup --ignore-case"
+  :config (setq helm-ag-base-command "ag --nogroup --ignore-case"
                 helm-ag-command-option "--all-text"
                 helm-ag-insert-at-point 'symbol
                 helm-ag-fuzzy-match t
@@ -435,6 +452,25 @@
 
 ;(use-package helm-ring
 ;  :bind (("M-y"     . helm-show-kill-ring)))
+
+
+
+;; Enable helm-gtags-mode
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+;; Set key bindings
+(eval-after-load "helm-gtags"
+  '(progn
+     (define-key helm-gtags-mode-map (kbd "M-t") 'helm-gtags-find-tag)
+     (define-key helm-gtags-mode-map (kbd "M-r") 'helm-gtags-find-rtag)
+     (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-find-symbol)
+     (define-key helm-gtags-mode-map (kbd "M-g M-p") 'helm-gtags-parse-file)
+     (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+     (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+     (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
+
 
 
 (use-package semantic
@@ -567,6 +603,9 @@
 (use-package company-auctex
   :ensure t)
 
+(use-package company-tern
+  :ensure t)
+
 (use-package company
   :ensure t
   :bind (("C-<return>" . company-complete)
@@ -595,6 +634,7 @@
 
             (add-to-list 'company-backends #'company-c-headers)
             (add-to-list 'company-backends #'company-anaconda)
+            (add-to-list 'company-backends 'company-tern)
 
             (bind-key "C-n"   #'company-select-next company-active-map)
             (bind-key "C-p"   #'company-select-previous company-active-map)
@@ -854,6 +894,7 @@
                              "\\`\\*Helm Find Files\\*\\'"
                              "\\`\\*Help\\*\\'"
                              "\\`\\*anaconda-doc\\*\\'"
+                             "\\`\\*ag search\\*\\'"
                              "\\`\\*Google Translate\\*\\'"
                              "\\` \\*LanguageTool Errors\\* \\'"))
 
@@ -887,6 +928,37 @@
   :ensure t
   :config (progn
             (setq latex-preview-pane-multifile-mode (quote auctex))))
+
+
+;;; Javascript.
+
+;; Javascript IDE.
+(use-package js2-mode
+  :ensure js2-mode
+  :mode ("\\.js$" . js2-mode)
+  :init
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+    (add-hook 'js-mode-hook 'js2-minor-mode)
+    (setq js2-highlight-level 3)))
+
+(use-package ac-js2
+  :ensure ac-js2
+  :init
+  (progn
+    (add-hook 'js2-mode-hook 'ac-js2-mode)))
+
+;; (use-package tern
+;;   :ensure tern
+;;   :init
+;;   (progn
+;;     (add-hook 'js-mode-hook (lambda () (tern-mode t)))))
+
+;; (use-package tern-auto-complete
+;;   :ensure tern-auto-complete
+;;   :init
+;;   (progn
+;;     (tern-ac-setup)))
 
 ;; ORG
 (setq org-directory "~/org/")
